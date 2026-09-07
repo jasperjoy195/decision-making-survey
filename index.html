@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Decision-Making Research Questionnaire</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Nunito+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#FBEEDA;
+    --surface:#FBEEDA;
+    --ink:#1E1B18;
+    --ink-soft:#6E6A63;
+    --line:#E4D5B9;
+    --accent:#C21C63;
+    --accent-ink:#FFFFFF;
+    --error:#8C3B2E;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--bg);
+    color:var(--ink);
+    font-family:'Nunito Sans', sans-serif;
+    min-height:100vh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:32px 16px;
+    position:relative;
+    overflow-x:hidden;
+  }
+  .backdrop{ display:none; }
+  .wrap{
+    position:relative; z-index:1;
+    width:100%; max-width:560px;
+  }
+  .masthead{
+    display:flex; align-items:baseline; justify-content:center;
+    margin-bottom:22px;
+  }
+  .masthead h1{
+    display:none;
+  }
+  .masthead span{
+    font-size:13px;
+    color:var(--ink-soft);
+    letter-spacing:0.3px;
+  }
+  .progress-track{
+    height:4px;
+    background:var(--line);
+    border-radius:2px;
+    overflow:hidden;
+    margin-bottom:40px;
+  }
+  .progress-fill{
+    height:100%;
+    background:var(--accent);
+    border-radius:2px;
+    transition:width 0.45s cubic-bezier(.4,0,.2,1);
+    width:0%;
+  }
+  .card{
+    background:transparent;
+    border:none;
+    border-radius:0;
+    padding:8px 8px 0 8px;
+    min-height:360px;
+    display:flex;
+    flex-direction:column;
+    text-align:center;
+  }
+  .step{
+    animation:rise 0.4s ease;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+  }
+  @keyframes rise{
+    from{opacity:0; transform:translateY(6px);}
+    to{opacity:1; transform:translateY(0);}
+  }
+  .qcount{
+    font-size:13px;
+    color:var(--ink-soft);
+    margin-bottom:10px;
+  }
+  .qtext{
+    font-family:'Poppins', sans-serif;
+    font-weight:700;
+    font-size:28px;
+    line-height:1.35;
+    margin:0 0 30px 0;
+    max-width:30ch;
+    color:var(--ink);
+  }
+  .qhint{
+    font-size:14px;
+    color:var(--ink-soft);
+    margin-top:-18px;
+    margin-bottom:22px;
+  }
+  .options{
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+    flex:1;
+    width:100%;
+    max-width:440px;
+  }
+  .option{
+    display:flex;
+    align-items:center;
+    gap:14px;
+    padding:15px 18px;
+    border:1.5px solid var(--line);
+    border-radius:10px;
+    background:#FFFDF8;
+    cursor:pointer;
+    text-align:left;
+    font-family:'Nunito Sans', sans-serif;
+    font-size:15.5px;
+    font-weight:500;
+    color:var(--ink);
+    transition:border-color 0.15s ease, background 0.15s ease, transform 0.1s ease;
+  }
+  .option:hover{
+    border-color:var(--accent);
+  }
+  .option.selected{
+    border-color:var(--accent);
+    background:#FDEBF1;
+  }
+  .option .bullet{
+    width:18px; height:18px; min-width:18px;
+    border-radius:6px;
+    border:1.5px solid var(--ink-soft);
+    position:relative;
+    flex-shrink:0;
+  }
+  .option.selected .bullet{
+    border-color:var(--accent);
+  }
+  .option.selected .bullet::after{
+    content:"";
+    position:absolute; inset:3px;
+    border-radius:3px;
+    background:var(--accent);
+  }
+  input[type="text"], input[type="number"]{
+    font-family:'Nunito Sans', sans-serif;
+    font-size:17px;
+    padding:14px 16px;
+    border:1.5px solid var(--line);
+    border-radius:10px;
+    background:#FFFDF8;
+    color:var(--ink);
+    outline:none;
+    width:100%;
+    max-width:400px;
+    text-align:center;
+  }
+  input[type="text"]:focus, input[type="number"]:focus{
+    border-color:var(--accent);
+  }
+  .nav{
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    gap:14px;
+    margin-top:34px;
+    padding-top:0;
+    border-top:none;
+    width:100%;
+  }
+  button{
+    font-family:'Poppins', sans-serif;
+    font-size:15px;
+    font-weight:600;
+    padding:13px 28px;
+    border-radius:9px;
+    border:1.5px solid var(--line);
+    background:transparent;
+    color:var(--ink-soft);
+    cursor:pointer;
+    box-shadow:0 2px 0 rgba(0,0,0,0.03);
+  }
+  button.primary{
+    background:var(--accent);
+    color:var(--accent-ink);
+    border-color:var(--accent);
+    box-shadow:0 3px 0 rgba(194,28,99,0.25);
+  }
+  button.primary:disabled{
+    opacity:0.35;
+    cursor:not-allowed;
+    box-shadow:none;
+  }
+  button:not(.primary):hover{
+    border-color:var(--ink-soft);
+  }
+  button:focus-visible, .option:focus-visible{
+    outline:2px solid var(--accent);
+    outline-offset:2px;
+  }
+  .intro p{
+    font-size:15.5px;
+    line-height:1.65;
+    color:var(--ink-soft);
+    margin:0 0 16px 0;
+    max-width:40ch;
+  }
+  .footer-link{ display:none; }
+  .done-mark{
+    font-family:'Poppins', sans-serif;
+    font-weight:700;
+    font-size:40px;
+    color:var(--accent);
+    margin-bottom:6px;
+  }
+  .admin-panel{
+    margin-top:20px;
+    font-size:13px;
+    color:var(--ink-soft);
+    text-align:center;
+  }
+  .admin-panel button{
+    margin-top:8px;
+  }
+  @media (max-width:480px){
+    .qtext{font-size:22px;}
+  }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <div class="masthead">
+    <span id="stepLabel"></span>
+  </div>
+  <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+  <div class="card" id="card"></div>
+  <div class="admin-panel" id="adminPanel" style="display:none;"></div>
+</div>
+
+<script>
+const questions = [
+  {id:"name", type:"text", text:"What is your name?"},
+  {id:"age", type:"number", text:"What is your age?"},
+  {id:"q3", type:"choice", text:"When you have to make an important decision, what do you usually rely on most?", options:[
+    ["A","🧠 Logic/reasoning"],["B","❤️ Feelings/emotions"],["C","👥 Advice from others"],["D","⚡ First instinct"],["E","📊 Research/information"]
+  ]},
+  {id:"q4", type:"choice", text:"You suddenly receive ₹10,000. Which would you choose?", hint:"💰", options:[
+    ["A","Keep ₹10,000 safely"],["B","Invest it with a chance of earning more"],["C","Spend it on something you've wanted for a long time"],["D","Use it for an experience/trip"],["E","Give/save part of it for someone important to you"]
+  ]},
+  {id:"q5", type:"choice", text:"You are offered — Option A: guaranteed ₹500. Option B: 50% chance of winning ₹1,500, 50% chance of nothing. Which would you choose?", hint:"🎲", options:[
+    ["A","₹500 guaranteed"],["B","Take the gamble"]
+  ]},
+  {id:"q6", type:"choice", text:"Your close friend makes a decision you strongly disagree with, and asks: \"Be honest. What do you think?\" What would you do?", hint:"❤️", options:[
+    ["A","Tell them honestly, even if they may be upset"],["B","Be gentle and tell them only part of what I think"],["C","Support them because it's their decision"],["D","Ask another friend what I should say"],["E","Avoid giving an opinion"]
+  ]},
+  {id:"q7", type:"choice", text:"You're already late for an important event. You can:", hint:"🚌", options:[
+    ["A","Take a familiar route that is slower but reliable"],["B","Try an unfamiliar shortcut that may save time"],["C","Wait and plan the fastest option carefully"],["D","Just leave immediately and figure it out along the way"]
+  ]},
+  {id:"q8", type:"choice", text:"You're scrolling online and see something you've wanted for a while, now 40% off, though you weren't planning to buy it. What do you do?", hint:"📱", options:[
+    ["A","Buy it immediately"],["B","Add it to the cart and think about it"],["C","Compare prices first"],["D","Decide not to buy it"],["E","Ask someone else's opinion"]
+  ]},
+  {id:"q9", type:"choice", text:"You receive two opportunities — Job A: ₹40,000/month, stable, predictable. Job B: ₹65,000/month, exciting, but less secure. Which would you choose?", hint:"💼", options:[
+    ["A","Job A"],["B","Job B"],["C","Depends — I'd research more first"]
+  ]},
+  {id:"q10", type:"choice", text:"You get an opportunity to do something you've never done before, and aren't sure whether you'll succeed. What do you do?", hint:"🚪", options:[
+    ["A","Try it immediately"],["B","Research and prepare first"],["C","Ask someone experienced for advice"],["D","Wait until I feel more confident"],["E","Avoid it"]
+  ]},
+  {id:"q11", type:"choice", text:"Five of your friends strongly support an opinion that you disagree with. What would you most likely do?", hint:"👥", options:[
+    ["A","Stick with my opinion"],["B","Change my opinion if their reasons are convincing"],["C","Stay quiet"],["D","Research the topic before deciding"],["E","Go along with them to avoid conflict"]
+  ]},
+  {id:"q12", type:"choice", text:"You have an important task due tomorrow. What do you do?", hint:"⏰", options:[
+    ["A","Start now and finish early"],["B","Take a break first and start later"],["C","Wait until I feel motivated"],["D","Ask someone to help me"],["E","Leave it until the last minute"]
+  ]},
+  {id:"q13", type:"choice", text:"You made a decision and later discovered another option would have been better. What would you most likely do?", hint:"🔄", options:[
+    ["A","Regret my decision for a while"],["B","Learn from it and move on"],["C","Try to correct the situation"],["D","Blame myself for not choosing differently"],["E","Think that it was just bad luck"]
+  ]},
+  {id:"q14", type:"choice", text:"You need to make an important decision, but have only 60% of the information you'd ideally want. What would you do?", hint:"🧩", options:[
+    ["A","Make the decision with the information available"],["B","Delay the decision until I know more"],["C","Ask someone I trust"],["D","Go with my instinct"],["E","Compare multiple possible outcomes first"]
+  ]},
+  {id:"q15", type:"choice", text:"After reading these situations, how would you describe yourself?", hint:"🧠", options:[
+    ["A","I think carefully before deciding"],["B","I usually trust my instincts"],["C","I consider other people's opinions"],["D","I take risks when opportunities appear"],["E","It depends heavily on the situation"]
+  ]}
+];
+
+let stepIndex = -1; // -1 = intro
+const answers = {};
+const card = document.getElementById("card");
+const progressFill = document.getElementById("progressFill");
+const stepLabel = document.getElementById("stepLabel");
+
+function renderIntro(){
+  stepLabel.textContent = "";
+  progressFill.style.width = "0%";
+  card.innerHTML = `
+    <div class="step intro">
+      <div class="qtext">Welcome</div>
+      <p>Please answer honestly and thoughtfully — there are no right or wrong answers. Your insights are valuable for our research on how people make decisions.</p>
+      <p>This will take about 4–5 minutes and covers 15 short questions, including a few quick decision scenarios.</p>
+      <div class="nav">
+        <span></span>
+        <button class="primary" id="startBtn">Begin</button>
+      </div>
+    </div>
+  `;
+  document.getElementById("startBtn").onclick = () => { stepIndex = 0; renderStep(); };
+}
+
+function renderStep(){
+  const q = questions[stepIndex];
+  stepLabel.textContent = `Question ${stepIndex+1} of ${questions.length}`;
+  progressFill.style.width = `${((stepIndex)/questions.length)*100}%`;
+
+  let bodyHtml = "";
+  if(q.type === "text"){
+    bodyHtml = `<input type="text" id="inputField" placeholder="Type your answer" value="${answers[q.id] || ""}" autocomplete="off" />`;
+  } else if(q.type === "number"){
+    bodyHtml = `<input type="number" id="inputField" placeholder="Type your answer" value="${answers[q.id] || ""}" min="1" max="120" />`;
+  } else {
+    bodyHtml = `<div class="options">` + q.options.map(([key,label]) => {
+      const sel = answers[q.id] === key ? "selected" : "";
+      return `<button type="button" class="option ${sel}" data-key="${key}">
+        <span class="bullet"></span><span>${label}</span>
+      </button>`;
+    }).join("") + `</div>`;
+  }
+
+  card.innerHTML = `
+    <div class="step">
+      <div class="qtext">${q.hint ? q.hint + " " : ""}${q.text}</div>
+      ${bodyHtml}
+      <div class="nav">
+        <button id="backBtn" ${stepIndex === 0 ? "disabled style='visibility:hidden'" : ""}>Back</button>
+        <button class="primary" id="nextBtn" disabled>${stepIndex === questions.length-1 ? "Submit" : "Next"}</button>
+      </div>
+    </div>
+  `;
+
+  const nextBtn = document.getElementById("nextBtn");
+  const backBtn = document.getElementById("backBtn");
+
+  function validate(){
+    const val = answers[q.id];
+    nextBtn.disabled = (val === undefined || val === null || val === "");
+  }
+
+  if(q.type === "choice"){
+    document.querySelectorAll(".option").forEach(btn => {
+      btn.onclick = () => {
+        answers[q.id] = btn.getAttribute("data-key");
+        document.querySelectorAll(".option").forEach(b => b.classList.remove("selected"));
+        btn.classList.add("selected");
+        validate();
+      };
+    });
+  } else {
+    const input = document.getElementById("inputField");
+    input.oninput = () => { answers[q.id] = input.value.trim(); validate(); };
+    setTimeout(() => input.focus(), 50);
+  }
+
+  validate();
+  backBtn.onclick = () => { stepIndex--; if(stepIndex < 0){ renderIntro(); } else { renderStep(); } };
+  nextBtn.onclick = () => {
+    if(stepIndex === questions.length - 1){ submitResponse(); }
+    else { stepIndex++; renderStep(); }
+  };
+}
+
+async function submitResponse(){
+  progressFill.style.width = "100%";
+  card.innerHTML = `<div class="step" style="align-items:center; justify-content:center; text-align:center;">
+    <div class="qtext">Saving your response…</div>
+  </div>`;
+  const record = {
+    id: `${Date.now()}-${Math.random().toString(36).slice(2,8)}`,
+    submittedAt: new Date().toISOString(),
+    ...answers
+  };
+  try{
+    const res = await window.storage.set(`response:${record.id}`, JSON.stringify(record), true);
+    if(!res){ throw new Error("Storage returned null"); }
+    renderDone(true);
+  }catch(e){
+    renderDone(false);
+  }
+}
+
+function renderDone(success){
+  stepLabel.textContent = "Complete";
+  card.innerHTML = success ? `
+    <div class="step" style="align-items:center; text-align:center; justify-content:center;">
+      <div class="done-mark">✓</div>
+      <div class="qtext" style="font-size:20px;">Thank you for taking part</div>
+      <p style="color:var(--ink-soft); font-size:14.5px;">Your response has been recorded for the research.</p>
+    </div>
+  ` : `
+    <div class="step" style="align-items:center; text-align:center; justify-content:center;">
+      <div class="qtext" style="font-size:20px; color:var(--error);">Something went wrong</div>
+      <p style="color:var(--ink-soft); font-size:14.5px;">Your response couldn't be saved. Please try submitting again.</p>
+      <div class="nav"><span></span><button class="primary" id="retryBtn">Try again</button></div>
+    </div>
+  `;
+  if(!success){
+    document.getElementById("retryBtn").onclick = submitResponse;
+  }
+}
+
+// --- Researcher / admin view ---
+// Only loads if the page is opened with #researcher in the URL, so regular
+// respondents filling out the survey never see this panel or trigger it.
+async function maybeShowAdmin(){
+  if(window.location.hash !== "#researcher") return;
+  document.querySelector(".wrap").style.maxWidth = "480px";
+  card.innerHTML = `<div class="step" style="align-items:center;"><div class="qtext" style="font-size:22px;">Researcher view</div></div>`;
+  progressFill.style.width = "0%";
+  stepLabel.textContent = "";
+  const panel = document.getElementById("adminPanel");
+  panel.style.display = "block";
+  panel.innerHTML = "Loading responses…";
+  try{
+    const list = await window.storage.list("response:", true);
+    const keys = (list && list.keys) || [];
+    panel.innerHTML = `${keys.length} response${keys.length===1?"":"s"} collected so far.<br><button class="primary" id="exportBtn" style="margin-top:12px;">Download CSV</button>`;
+    document.getElementById("exportBtn").onclick = () => exportCsv(keys);
+  }catch(e){
+    panel.innerHTML = "Couldn't load response count.";
+  }
+}
+
+async function exportCsv(keys){
+  const rows = [];
+  for(const k of keys){
+    try{
+      const r = await window.storage.get(k, true);
+      if(r && r.value){ rows.push(JSON.parse(r.value)); }
+    }catch(e){ /* skip missing */ }
+  }
+  const cols = ["id","submittedAt","name","age","q3","q4","q5","q6","q7","q8","q9","q10","q11","q12","q13","q14","q15"];
+  const csvLines = [cols.join(",")];
+  rows.forEach(r => {
+    csvLines.push(cols.map(c => `"${(r[c] ?? "").toString().replace(/"/g,'""')}"`).join(","));
+  });
+  const blob = new Blob([csvLines.join("\n")], {type:"text/csv"});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "decision_making_survey_responses.csv";
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  URL.revokeObjectURL(url);
+}
+
+if(window.location.hash === "#researcher"){
+  maybeShowAdmin();
+} else {
+  renderIntro();
+}
+</script>
+</body>
+</html>
